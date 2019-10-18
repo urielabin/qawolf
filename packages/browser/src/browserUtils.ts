@@ -7,7 +7,6 @@ import { getDevice } from "./device";
 export const buildOptions = (device: Device) => {
   const launchOptions: LaunchOptions = {
     args: [
-      "--disable-dev-shm-usage",
       "--disable-infobars",
       "--no-default-browser-check",
       "--window-position=0,0",
@@ -20,9 +19,7 @@ export const buildOptions = (device: Device) => {
   };
 
   if (platform() === "linux") {
-    launchOptions!.args!.push("--disable-gpu");
-    launchOptions!.args!.push("--disable-setuid-sandbox");
-    launchOptions!.args!.push("--no-sandbox");
+    launchOptions!.args!.push("--disable-dev-shm-usage");
   }
 
   if (CONFIG.chromeExecutablePath) {

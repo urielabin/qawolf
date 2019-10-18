@@ -1,7 +1,9 @@
 # ubuntu & node
 FROM node:12.6.0-stretch
 
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    QAWOLF_DIR="/home/qawolf"
 
 RUN apt-get -qqy update && \
     # Install chrome
@@ -22,16 +24,18 @@ RUN apt-get -qqy update && \
     xfonts-scalable \
     xfonts-cyrillic && \
     # Free up space
-    apt-get clean
+    apt-get clean && \
+    # Add user so we don't need --no-sandbox.
+    groupadd -r qawolf && useradd -r -g qawolf -G audio,video qawolf \
+    && mkdir -p /home/qawolf/Downloads \
+    && chown -R qawolf:qawolf /home/qawolf
+
+# Run everything after as non-privileged user.
+USER qawolf
 
 # Copy everything and install dependencies in a static location that is not WORKDIR
 # WORKDIR will be replaced by github action volume
-ENV QAWOLF_DIR "/root/qawolf"
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-
-# Copy and build qawolf
-COPY . ${QAWOLF_DIR}/.
+COPY --chown=qawolf:qawolf . ${QAWOLF_DIR}/.
 
 # uncomment to see what is copied
 # RUN find ${QAWOLF_DIR}
@@ -48,4 +52,4 @@ ENV QAW_CHROME_EXECUTABLE_PATH="google-chrome-stable" \
     QAW_HEADLESS="false" \
     QAW_SERIAL="true"
 
-ENTRYPOINT ["/root/qawolf/entrypoint.sh"]
+ENTRYPOINT ["/home/qawolf/entrypoint.sh"]
