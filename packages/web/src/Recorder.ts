@@ -99,6 +99,14 @@ export class Recorder {
       value: event.key
     }));
 
+    this.recordEvent("keypress", event => ({
+      isTrusted: event.isTrusted,
+      name: "keypress",
+      target: nodeToDocSelector(event.target as HTMLElement),
+      time: Date.now(),
+      value: event.key
+    }));
+
     this.recordEvent("keyup", event => ({
       isTrusted: event.isTrusted,
       name: "keyup",

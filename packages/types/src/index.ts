@@ -33,6 +33,7 @@ export type EventName =
   | "click"
   | "input"
   | "keydown"
+  | "keypress"
   | "keyup"
   | "paste"
   | "scroll";

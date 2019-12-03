@@ -69,10 +69,16 @@ export class TypeStepFactory {
     }
 
     const code = characterToCode(event.value);
-    let type: StrokeType = event.name === "keydown" ? "↓" : "↑";
-    if (!code) {
-      // sendCharacter if we cannot find the key's code
-      type = "→";
+
+    let type: StrokeType = "→";
+    let value = event.value;
+
+    if (code && event.name === "keydown") {
+      type = "↓";
+      value = code;
+    } else if (code && event.name === "keyup") {
+      type = "↑";
+      value = code;
     }
 
     if (!this.pendingEvent) this.pendingEvent = event;
@@ -80,7 +86,7 @@ export class TypeStepFactory {
     this.pendingStrokes.push({
       index,
       type,
-      value: code ? code : event.value
+      value
     });
   }
 
