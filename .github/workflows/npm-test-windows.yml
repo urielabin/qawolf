@@ -2,10 +2,10 @@ name: npm test windows-latest
 on:
   push:
     branches:
-      - master
+      - "*"
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: windows-2016
 
     steps:
       - uses: actions/setup-node@v1
